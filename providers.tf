@@ -9,7 +9,6 @@ terraform {
     }
   }
 
-
   cloud {
     organization = "Tempest-Cor"
 
