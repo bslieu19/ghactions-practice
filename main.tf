@@ -32,10 +32,10 @@ resource "aws_security_group" "allow_tls" {
   }
 }
 
-resource "aws_key_pair" "deployer" {
-  key_name   = "temp-key"
-  public_key = ${{secrets.TEMP_KEYS}}
-}
+##resource "aws_key_pair" "deployer" {
+##  key_name   = "temp-key"
+##  public_key = ${{secrets.TEMP_KEYS}}
+##}
 
 
 ################## Infrastructure ###################
