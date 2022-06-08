@@ -1,0 +1,93 @@
+---
+- name: Update Ubuntu Packages
+  apt:
+    upgrade: full
+
+- name: Install related packages
+  become: yes
+  apt:
+    state: present
+    name:
+      - docker.io
+      - fail2ban
+      - knockd
+      - openssh-server
+      - qemu-guest-agent
+
+- name: Enable the installed services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - docker
+    - fail2ban
+    - ssh
+    - knockd
+
+- name: Set timezone
+  become: yes
+  shell: timedatectl set-timezone America/{{TIMEZONE}}
+
+- name: Edit the hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Firewall - Activate logging
+  ufw:
+    logging: 'on'
+
+- name: Firewall - Allow SSH
+  ufw:
+    rule: allow
+    port: ssh
+    proto: tcp
+
+- name: Firewall - Allow OpenSSH
+  ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: Firewall - Allow HTTP and HTTPS
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items:
+    - '80'
+    - '443'
+
+- name: Deny all IPv6 Traffic
+  ufw:
+    rule: deny
+    to_ip: "::"
+    insert: 0
+    insert_relative_to: first-ipv6
+
+
+#Free Port 53
+- name: Free Port 53 - Modify DNS entry
+  replace:
+    path: /etc/systemd/resolved.conf
+    regexp: "#DNS="
+    replace: "DNS=1.1.1.1"
+
+- name: Free Port 53 - Modify DNSStubListener
+  replace:
+    path: /etc/systemd/resolved.conf
+    regexp: "#DNSStubListener=yes"
+    replace: "DNSStubListener=no"
+
+- name: Free Port 53 - Create symbolic link
+  shell: ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
+
+- name: Use all of Ubuntu LVM
+  become: yes
+  lvol:
+    vg: ubuntu-vg
+    lv: ubuntu-lv
+    size: 100%FREE
+
+- name: reboot
+  reboot:
