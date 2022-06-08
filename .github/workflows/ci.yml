@@ -94,9 +94,6 @@ jobs:
       run: terraform apply -auto-approve -input=false
 
 # Notification
-    - name: Actions for Discord
-      uses: Ilshidur/action-discord@0.3.2
-
     - name: Discord notification
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
