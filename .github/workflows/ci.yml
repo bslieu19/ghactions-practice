@@ -92,3 +92,15 @@ jobs:
     - name: Terraform Apply
       if: github.event_name == 'push' #github.ref == 'refs/heads/"main"' &&
       run: terraform apply -auto-approve -input=false
+
+# Notification
+    - name: Actions for Discord
+      uses: Ilshidur/action-discord@0.3.2
+
+    - name: Discord notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
+
