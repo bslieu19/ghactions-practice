@@ -1,5 +1,5 @@
 ---
-- name: Configure something 1
+- name: Configure something
   become: yes
   hosts: all
   roles:

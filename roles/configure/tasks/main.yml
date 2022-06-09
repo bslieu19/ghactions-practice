@@ -27,11 +27,11 @@
 
 - name: Set timezone
   become: yes
-  shell: timedatectl set-timezone America/{{TIMEZONE}}
+  shell: timedatectl set-timezone America/Los_Angeles
 
 - name: Edit the hostname
   hostname:
-    name: "{{ inventory_hostname }}"
+    name: "Tester"
 
 - name: Firewall - Activate logging
   ufw:
