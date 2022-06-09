@@ -32,8 +32,6 @@ resource "aws_security_group" "allow_tls" {
   }
 }
 
-variable "key_name" {}
-
 resource "tls_private_key" "aws_keys" {
   algorithm = "RSA"
   rsa_bits  = 4096
