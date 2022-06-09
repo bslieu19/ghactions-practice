@@ -1,0 +1,6 @@
+---
+- name: Configure something 1
+  become: yes
+  hosts: all
+  roles:
+    - configure
