@@ -75,7 +75,8 @@ resource "aws_instance" "web" {
   }
   ########################### Terraform-Ansible ###############################
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u {var.user} -i ${self.public_ip} --private-key ${tls_private_key.aws_keys.private_key_pem} ${github.workspace}/playbook.yml"
+    command = pwd
+    #"ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u {var.user} -i ${self.public_ip} --private-key ${tls_private_key.aws_keys.private_key_pem} ${github.workspace}/playbook.yml"
   }
 }
 
