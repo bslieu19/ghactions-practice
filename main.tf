@@ -38,7 +38,7 @@ resource "tls_private_key" "aws_keys" {
 }
 
 resource "aws_key_pair" "generated_key" {
-  key_name   = var.key_name
+  key_name   = test
   public_key = tls_private_key.aws_keys.public_key_openssh
 }
 
