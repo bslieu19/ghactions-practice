@@ -78,6 +78,7 @@ resource "aws_instance" "web" {
     inline = ["echo 'Hello World'"]
 
     connection {
+      host        = self.public_ip
       type        = "ssh"
       user        = "ec2-user"
       private_key = tls_private_key.aws_keys.private_key_pem
