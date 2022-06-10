@@ -71,10 +71,22 @@ resource "aws_instance" "web" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.generated_key.key_name
   tags = {
-    Name = "HelloWorld"
+    Name = "services"
   }
   ########################### Terraform-Ansible ###############################
-  provisioner "local-exec" { command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u {var.user} -i ${self.public_ip} --private-key ${tls_private_key.aws_keys.private_key_pem} ../../playbook.yml" }
+    provisioner "remote-exec" {
+    inline = ["echo 'Hello World'"]
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = "${tls_private_key.aws_keys.private_key_pem}"
+    }
+  }
+    provisioner "local-exec" {
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${self.public_ip} --private-key ${tls_private_key.aws_keys.private_key_pem} playbook.yml"
+  }
+
 }
 
 
