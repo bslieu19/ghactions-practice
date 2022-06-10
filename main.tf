@@ -17,21 +17,16 @@ resource "aws_subnet" "main" {
   }
 }
 
-################### Security #####################
-resource "aws_security_group" "allow_tls" {
-  name        = "allow_tls"
-  description = "Allow TLS inbound traffic"
-  vpc_id      = aws_vpc.main.id
+resource "aws_network_interface" "foo" {
+  subnet_id   = aws_subnet.main.id
+  private_ips = ["10.10.25.41"]
 
-  ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+  tags = {
+    Name = "primary_network_interface"
   }
 }
 
+################### Security #####################
 resource "tls_private_key" "aws_keys" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -47,6 +42,31 @@ resource "aws_key_pair" "generated_key" {
 ##  public_key = ${{secrets.TEMP_KEYS}}
 ##}
 
+resource "aws_security_group" "allow_tls" {
+  name        = "allow_tls"
+  description = "Allow TLS inbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "TLS from VPC"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_tls"
+  }
+}
 
 ################## Infrastructure ###################
 data "aws_ami" "ubuntu" {
@@ -70,6 +90,12 @@ resource "aws_instance" "web" {
   instance_type               = "t3.micro"
   associate_public_ip_address = true
   key_name                    = aws_key_pair.generated_key.key_name
+  security_groups             = aws_security_groups.allow_tls.allow_tls
+
+  network_interface {
+    network_interface_id = aws_network_interface.foo.id
+    device_index         = 0
+  }
   tags = {
     Name = "services"
   }
