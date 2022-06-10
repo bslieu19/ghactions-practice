@@ -1,4 +1,7 @@
 *.env*
 *.tfstate*
-*.terraform/
-*.terraform*
+.terraform
+*.pem
+*.pub
+terrform-*
+*keys*

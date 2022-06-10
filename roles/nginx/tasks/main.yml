@@ -1,0 +1,15 @@
+---
+- name: Update all packages
+  apt:
+    upgrade:
+
+- name: Obtain Latest Nginx Package
+  apt:
+    name: Nginx
+    state: latest
+
+- name: Run Nginx
+  systemd:
+    state: started
+    name: nginx
+    enabled: yes 

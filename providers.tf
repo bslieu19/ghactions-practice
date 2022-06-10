@@ -1,3 +1,9 @@
+locals {
+  private_key_path = "Test.pem"
+  ssh_user = "ubuntu"
+  key_name = "Test"
+}
+
 terraform {
   required_providers {
     aws = {
