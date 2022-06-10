@@ -3,7 +3,7 @@
 resource "aws_security_group" "nginx-sec" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = "vpc-03de7ccc2e1743fbe"
 
   ingress {
     description = "TLS from VPC"
