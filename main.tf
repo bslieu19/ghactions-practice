@@ -90,7 +90,7 @@ resource "aws_instance" "web" {
   instance_type               = "t3.micro"
   associate_public_ip_address = true
   key_name                    = aws_key_pair.generated_key.key_name
-  security_groups             = aws_security_groups.allow_tls.allow_tls
+  security_groups             = aws_security_group.allow_tls.id
 
   network_interface {
     network_interface_id = aws_network_interface.foo.id
