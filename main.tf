@@ -74,16 +74,16 @@ resource "aws_instance" "web" {
     Name = "services"
   }
   ########################### Terraform-Ansible ###############################
-    provisioner "remote-exec" {
+  provisioner "remote-exec" {
     inline = ["echo 'Hello World'"]
 
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = "${tls_private_key.aws_keys.private_key_pem}"
+      private_key = tls_private_key.aws_keys.private_key_pem
     }
   }
-    provisioner "local-exec" {
+  provisioner "local-exec" {
     command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${self.public_ip} --private-key ${tls_private_key.aws_keys.private_key_pem} playbook.yml"
   }
 
